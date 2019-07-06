@@ -8,6 +8,18 @@ int main() {
   // Create a render window that will render our videomode
   RenderWindow window(vm, "Timber!!!", Style::Fullscreen);
 
+  // Create our texture for loading imgs into the GPU
+  Texture backgroundTexture;
+  // Create a sprite
+  Sprite backgroundSprite;
+
+  // Load the texture from the png file
+  backgroundTexture.loadFromFile("graphics/background.png");
+  // Associate the sprite to the texture
+  backgroundSprite.setTexture(backgroundTexture);
+  // Set the sprites position relative to the inside of the window
+  backgroundSprite.setPosition(0, 0);
+
   // The main while loop
   while (window.isOpen()) {
     /*
@@ -28,7 +40,10 @@ int main() {
      */
     // Clear the display
     window.clear();
-    window.clear();
+
+    // Draw the background sprite
+    window.draw(backgroundSprite);
+
     // Display everything drawn
     window.display();
   }
