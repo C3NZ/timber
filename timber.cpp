@@ -3,6 +3,10 @@
 using namespace sf;
 
 int main() {
+
+  // Seed the random number generator
+  srand((int)time(0));
+
   // Set the video mode to 1920x1080, the dimension of our screen.
   VideoMode vm(1920, 1080);
   // Create a render window that will render our videomode
@@ -39,24 +43,31 @@ int main() {
   bool beeActive = false;
   float beeSpeed = 0.0f;
 
+  // Create the cloud texture
   Texture cloudTexture;
   cloudTexture.loadFromFile("graphics/cloud.png");
 
+  // Create the cloud sprites, set them to all be of one texture
+  // and then set their positions
   Sprite cloudSprite1;
   Sprite cloudSprite2;
   Sprite cloudSprite3;
-
   cloudSprite1.setTexture(cloudTexture);
   cloudSprite2.setTexture(cloudTexture);
   cloudSprite3.setTexture(cloudTexture);
-
   cloudSprite1.setPosition(0, 0);
   cloudSprite2.setPosition(0, 250);
   cloudSprite3.setPosition(0, 500);
 
+  // Cloud properties
+  bool cloud1Active = false;
+  bool cloud2Active = false;
+  bool cloud3Active = false;
   float cloud1Speed = 0.0f;
   float cloud2Speed = 0.0f;
   float cloud3Speed = 0.0f;
+
+  Clock clock;
 
   while (window.isOpen()) {
     /*
@@ -71,7 +82,51 @@ int main() {
     /*
      * Update the scene
      */
+    Time dt = clock.restart();
 
+    if (!beeActive) {
+      // Seed the random number generator and then
+      // generate the bees speed
+      srand((int)time(0));
+      beeSpeed = (rand() % 200) + 200;
+
+      // Seed the random number generator again and then seed the bees height
+      srand((int)time(0) * 10);
+      float height = (rand() % 500) + 500;
+      beeSprite.setPosition(2000, height);
+      beeActive = true;
+    } else {
+      // Calculate the newX of the bee
+      float newX = beeSprite.getPosition().x - (beeSpeed * dt.asSeconds());
+      beeSprite.setPosition(newX, beeSprite.getPosition().y);
+
+      // If the bee has made it to the other side of the screen,
+      // the bee needs to be reset.
+      if (beeSprite.getPosition().x < -100) {
+        beeActive = false;
+      }
+    }
+
+    if (!cloud1Active) {
+      // Obtain and set the clouds horizontal speed
+      srand((int)time(0) * 10);
+      cloud1Speed = (rand() % 200);
+
+      // Obtain and set the clouds height
+      srand((int)time(0) * 10);
+      float height = (rand() % 150);
+      cloudSprite1.setPosition(-200, height);
+      cloud1Active = true;
+    } else {
+      float newX =
+          cloudSprite1.getPosition().x + (cloud1Speed * dt.asSeconds());
+
+      cloudSprite1.setPosition(newX, cloudSprite1.getPosition().y);
+
+      if (cloudSprite1.getPosition().x > 1920) {
+        cloud1Active = false;
+      }
+    }
     /*
      * Draw the scene
      */
