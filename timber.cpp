@@ -122,9 +122,9 @@ int main() {
       window.close();
     }
 
-    // Handle unpausing the game.
+    // Handle pausing and unpausing the game.
     if (Keyboard::isKeyPressed(Keyboard::Return)) {
-      paused = false;
+      paused = !paused;
     }
 
     /*
@@ -252,6 +252,15 @@ int main() {
 
     // Draw the bee
     window.draw(beeSprite);
+
+    // Draw the score
+    window.draw(scoreText);
+
+    // If the game is paused, draw the pause message
+    if (paused) {
+      window.draw(messageText);
+    }
+
     // Display everything drawn
     window.display();
   }
