@@ -108,25 +108,74 @@ int main() {
     }
 
     if (!cloud1Active) {
-      // Obtain and set the clouds horizontal speed
+      // Obtain and set the 1st clouds horizontal speed
       srand((int)time(0) * 10);
       cloud1Speed = (rand() % 200);
 
-      // Obtain and set the clouds height
+      // Obtain and set the 1st clouds height
       srand((int)time(0) * 10);
       float height = (rand() % 150);
       cloudSprite1.setPosition(-200, height);
       cloud1Active = true;
     } else {
+      // Update the position of the cloud based on it's speed
       float newX =
           cloudSprite1.getPosition().x + (cloud1Speed * dt.asSeconds());
 
       cloudSprite1.setPosition(newX, cloudSprite1.getPosition().y);
 
+      // reset the first cloud
       if (cloudSprite1.getPosition().x > 1920) {
         cloud1Active = false;
       }
     }
+
+    if (!cloud2Active) {
+      // Obtain and set the speed of the 2nd cloud sprite
+      srand((int)time(0) * 20);
+      cloud2Speed = (rand() % 200);
+
+      // Obtain and set the height of the 2nd cloud sprite
+      srand((int)time(0) * 20);
+      float height = (rand() % 300) - 150;
+      cloudSprite2.setPosition(-200, height);
+      cloud2Active = true;
+    } else {
+      // Update the position of the cloud based on it's speed
+      float newX =
+          cloudSprite2.getPosition().x + (cloud2Speed * dt.asSeconds());
+
+      cloudSprite2.setPosition(newX, cloudSprite2.getPosition().y);
+
+      // Reset the second cloud
+      if (cloudSprite2.getPosition().x > 1920) {
+        cloud2Active = false;
+      }
+    }
+
+    if (!cloud3Active) {
+      // Obtain and set the speed of the 3rd cloud sprite
+      srand((int)time(0) * 30);
+      cloud3Speed = (rand() % 200);
+
+      // Obtain and set the height of the 3rd cloud sprite
+      srand((int)time(0) * 30);
+      float height = (rand() % 450) - 150;
+      cloudSprite3.setPosition(-200, height);
+      cloud3Active = true;
+    } else {
+      // Update the position of the cloud based on it's speed
+      float newX =
+          cloudSprite3.getPosition().x + (cloud3Speed * dt.asSeconds());
+
+      cloudSprite3.setPosition(newX, cloudSprite3.getPosition().y);
+
+      // reset the third cloud
+      if (cloudSprite3.getPosition().x > 1920) {
+        cloud3Active = false;
+      }
+    }
+
     /*
      * Draw the scene
      */
