@@ -5,6 +5,19 @@
 
 using namespace sf;
 
+// The function prototype
+void updateBranches(int seed);
+
+// The number of branches our tree will have
+const int NUM_BRANCHES = 6;
+
+// All of our branches held within a sprite array
+Sprite branches[NUM_BRANCHES];
+
+// Sides that the player or branch is on
+enum class side { LEFT, RIGHT, NONE };
+side branchPositions[NUM_BRANCHES];
+
 int main() {
 
   // Seed the random number generator
@@ -125,6 +138,17 @@ int main() {
   // Set the position to be the middle of the screen.
   messageText.setPosition(1920 / 2.0f, 1080 / 2.0f);
   scoreText.setPosition(20, 20);
+
+  Texture branchTexture;
+  branchTexture.loadFromFile("graphics/branch.png");
+
+  for (int i = 0; i < NUM_BRANCHES; i++) {
+    branches[i].setTexture(branchTexture);
+    branches[i].setPosition(-2000, -2000);
+    // Sets the branches origin to dead center, for
+    // rotatating it without changing it's position.
+    branches[i].setOrigin(220, 20);
+  }
 
   while (window.isOpen()) {
     /*
@@ -273,6 +297,19 @@ int main() {
     ss << "Score = " << score;
     scoreText.setString(ss.str());
 
+    // Iterate through the branches and update them.
+    for (int i = 0; i < NUM_BRANCHES; i++) {
+      float height = i * 150;
+      if (branchPositions[i] == side::LEFT) {
+        branches[i].setPosition(610, height);
+        branches[i].setRotation(180);
+      } else if (branchPositions[i] == side::RIGHT) {
+        branches[i].setPosition(1330, height);
+        branches[i].setRotation(0);
+      } else {
+        branches[i].setPosition(3000, height);
+      }
+    }
     /*
      * Draw the scene
      */
@@ -286,6 +323,11 @@ int main() {
     window.draw(cloudSprite1);
     window.draw(cloudSprite2);
     window.draw(cloudSprite3);
+
+    // Draw the branches for the treea
+    for (int i = 0; i < NUM_BRANCHES; i++) {
+      window.draw(branches[i]);
+    }
 
     // Draw the trees
     window.draw(treeSprite);
@@ -307,4 +349,32 @@ int main() {
     window.display();
   }
   return 0;
+}
+
+void updateBranches(int seed) {
+  /*
+   *   Update the branches accordingly
+   */
+
+  // Move all the branches down one place
+  for (int i = NUM_BRANCHES - 1; i > 0; i--) {
+    branchPositions[i] = branchPositions[i - 1];
+  }
+
+  // Seed our random number generator and generate a random number
+  srand((int)time(0) + seed);
+  int randomNum = (rand() % 5);
+
+  // Choose the position of the highest branch
+  switch (randomNum) {
+  case 0:
+    branchPositions[0] = side::LEFT;
+    break;
+  case 1:
+    branchPositions[0] = side::RIGHT;
+    break;
+  default:
+    branchPositions[0] = side::NONE;
+    break;
+  }
 }
