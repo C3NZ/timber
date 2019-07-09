@@ -36,6 +36,7 @@ int main() {
   // Set the initial positions for the sprites
   // relative to the window.
 
+  // Setup the bee texture and load it's sprite on screen.
   Texture beeTexture;
   Sprite beeSprite;
   beeTexture.loadFromFile("graphics/bee.png");
@@ -72,6 +73,19 @@ int main() {
 
   // Variable for keeping track of the time.
   Clock clock;
+
+  // Setup the time bar to let the player know how much time is left.
+  RectangleShape timeBar;
+  float timeBarStartWidth = 400;
+  float timeBarHeight = 80;
+  timeBar.setSize(Vector2f(timeBarStartWidth, timeBarHeight));
+  timeBar.setFillColor(Color::Red);
+  timeBar.setPosition((1920 / 2) - timeBarStartWidth / 2, 980);
+
+  // Setup the remaining time
+  Time gameTimeTotal;
+  float timeRemaining = 6.0f;
+  float timeBarWidthPerSecond = timeBarStartWidth / timeRemaining;
 
   // Keeping track of whether the game is running or not.
   bool paused = true;
@@ -110,8 +124,8 @@ int main() {
 
   // Set the position to be the middle of the screen.
   messageText.setPosition(1920 / 2.0f, 1080 / 2.0f);
-
   scoreText.setPosition(20, 20);
+
   while (window.isOpen()) {
     /*
      * Handle player input
@@ -125,6 +139,10 @@ int main() {
     // Handle pausing and unpausing the game.
     if (Keyboard::isKeyPressed(Keyboard::Return)) {
       paused = !paused;
+
+      // Reset the score and the time remaining when the user pauses
+      score = 0;
+      timeRemaining = 5;
     }
 
     /*
@@ -135,6 +153,27 @@ int main() {
     if (!paused) {
 
       Time dt = clock.restart();
+
+      // Update the time bar that shows the player how much time is left.
+      timeRemaining -= dt.asSeconds();
+      float newBarWidth = timeBarWidthPerSecond * timeRemaining;
+      timeBar.setSize(Vector2f(newBarWidth, timeBarHeight));
+
+      if (timeRemaining <= 0.0f) {
+        paused = true;
+
+        messageText.setString("Out of time!!");
+
+        // Grab the Rectangle bounding box of the text and compute the new
+        // origins.
+        FloatRect messageRect = messageText.getLocalBounds();
+        float xOrigin = messageRect.left + messageRect.width / 2.0f;
+        float yOrigin = messageRect.top + messageRect.height / 2.0f;
+
+        // Update the origin and position of the text
+        messageText.setOrigin(xOrigin, yOrigin);
+        messageText.setPosition(1920 / 2.0f, 1080 / 2.0f);
+      }
 
       if (!beeActive) {
         // Seed the random number generator and then
@@ -233,6 +272,7 @@ int main() {
     std::stringstream ss;
     ss << "Score = " << score;
     scoreText.setString(ss.str());
+
     /*
      * Draw the scene
      */
@@ -255,6 +295,8 @@ int main() {
 
     // Draw the score
     window.draw(scoreText);
+
+    window.draw(timeBar);
 
     // If the game is paused, draw the pause message
     if (paused) {
