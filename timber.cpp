@@ -28,11 +28,6 @@ int main() {
   // Create a render window that will render our videomode
   RenderWindow window(vm, "Timber!!!", Style::Fullscreen);
 
-  // Create our texture for loading imgs into the GPU
-  // Add the tree texture
-  // Bee texture
-  // Create sprites for both the background and the tree.
-
   // Load the background texture and load it's sprite on screen
   Texture backgroundTexture;
   Sprite backgroundSprite;
@@ -142,6 +137,7 @@ int main() {
   Texture branchTexture;
   branchTexture.loadFromFile("graphics/branch.png");
 
+  // Initialize the branches
   for (int i = 0; i < NUM_BRANCHES; i++) {
     branches[i].setTexture(branchTexture);
     branches[i].setPosition(-2000, -2000);
@@ -149,6 +145,41 @@ int main() {
     // rotatating it without changing it's position.
     branches[i].setOrigin(220, 20);
   }
+
+  // Setup the player texture and sprites.
+  Texture playerTexture;
+  Sprite playerSprite;
+  playerTexture.loadFromFile("graphics/player.png");
+  playerSprite.setTexture(playerTexture);
+  playerSprite.setPosition(580, 720);
+
+  // The side in which the player starts on.
+  side playerSide = side::LEFT;
+
+  Texture ripTexture;
+  Sprite ripSprite;
+  ripTexture.loadFromFile("graphics/rip.png");
+  ripSprite.setTexture(ripTexture);
+  ripSprite.setPosition(600, 860);
+
+  Texture axeTexture;
+  Sprite axeSprite;
+  axeTexture.loadFromFile("graphics/axe.png");
+  axeSprite.setTexture(axeTexture);
+  axeSprite.setPosition(700, 830);
+
+  const float AXE_POSITION_LEFT = 700;
+  const float AXE_POSITION_RIGHT = 1075;
+
+  Texture logTexture;
+  Sprite logSprite;
+  logTexture.loadFromFile("graphics/log.png");
+  logSprite.setTexture(logTexture);
+  logSprite.setPosition(810, 720);
+
+  bool logActive = false;
+  float logSpeedX = 1000;
+  float logSpeedY = -1500;
 
   while (window.isOpen()) {
     /*
@@ -331,6 +362,18 @@ int main() {
 
     // Draw the trees
     window.draw(treeSprite);
+
+    // Draw the player
+    window.draw(playerSprite);
+
+    // Draw the axe
+    window.draw(axeSprite);
+
+    // Draw the log sprite
+    window.draw(logSprite);
+
+    // draw the rip sprite
+    window.draw(ripSprite);
 
     // Draw the bee
     window.draw(beeSprite);
